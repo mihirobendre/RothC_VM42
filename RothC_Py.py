@@ -1,11 +1,19 @@
 
+# Initializing inputs
+
+starting_soil_carbon = 31.84
+
+carbon_input_project = 4 # annual input
+farmyard_manure_project = 0.1 * 0.5535 # annual input
+
+carbon_input_baseline = 2.5 # annual input
+farmyard_manure_baseline = 0 # annual input
+
 ################################################################
 #####################  PROJECT SCENARIO  #######################
 ################################################################
 
 input_file_name = "input_project.csv"
-carbon_input = 1.980596942 # annual input
-farmyard_manure = 0.1 * 0.5535 # annual input
 
 import pandas as pd
 import numpy as np
@@ -242,7 +250,8 @@ depth = df_head.loc[0,"depth"]
 #IOM = [df_head.loc[0,"iom"]]
 
 # set initial pool values 
-soc = 31.84
+soc = starting_soil_carbon
+
 #soc = 0
 SOC = [soc]
 
@@ -288,7 +297,9 @@ SOC[0] = DPM[0]+RPM[0]+BIO[0]+HUM[0]+IOM[0]
 #print (j, DPM[0], RPM[0], BIO[0], HUM[0], IOM[0], SOC[0])
 
 timeFact = 12
-    
+
+first_year = True
+
 test = 100.0
 while (test > 1E-6):
     k = k + 1
@@ -299,17 +310,18 @@ while (test > 1E-6):
     
     TEMP = df.t_tmp[k]
     RAIN = df.t_rain[k]
-    PEVAP =df.t_evap[k]
+    PEVAP =df.t_evap[k]/0.75
     
     PC = df.t_PC[k]
     DPM_RPM = df.t_DPM_RPM[k]
-
-    C_Inp = carbon_input/12
-    # C_Inp = df.t_C_Inp[k]
     
-    FYM_Inp = farmyard_manure/12
+    C_Inp = carbon_input_baseline/12
+	# C_Inp = df.t_C_Inp[k]
+    
+    FYM_Inp = farmyard_manure_baseline/12
 	# FYM_Inp = df.t_FYM_Inp[k]
     
+
     modernC = df.t_mod[k] / 100.0   
 
     Total_Rage=[0.0]
@@ -335,17 +347,16 @@ for  i in range(timeFact, nsteps):
   
     TEMP = df.t_tmp[i]
     RAIN = df.t_rain[i]
-    PEVAP =df.t_evap[i]
+    PEVAP =df.t_evap[i]/0.75
     
     PC = df.t_PC[i]
     DPM_RPM = df.t_DPM_RPM[i]
 
-    C_Inp = carbon_input/12
-    #C_Inp = df.t_C_Inp[i]
-    
-    FYM_Inp = farmyard_manure/12
-	# FYM_Inp = df.t_FYM_Inp[i]
-    
+    C_Inp = carbon_input_project/12
+    # C_Inp = df.t_C_Inp[k]
+    FYM_Inp = farmyard_manure_project/12
+    # FYM_Inp = df.t_FYM_Inp[k]
+
     modernC = df.t_mod[i] / 100.0
     
     RothC(timeFact, DPM,RPM,BIO,HUM,IOM, SOC, DPM_Rage, RPM_Rage, BIO_Rage, HUM_Rage, Total_Rage, \
@@ -376,8 +387,6 @@ output_months_project = pd.DataFrame(month_list, columns=["Year","Month","DPM_t_
 
 
 input_file_name = "input_baseline.csv"
-carbon_input = 1.812264822 # annual input
-farmyard_manure = 0 # annual input
 
 import pandas as pd
 import numpy as np
@@ -612,7 +621,7 @@ depth = df_head.loc[0,"depth"]
 #IOM = [df_head.loc[0,"iom"]]
 
 # set initial pool values 
-soc = 31.84
+soc = starting_soil_carbon
 #soc = 0
 SOC = [soc]
 
@@ -669,15 +678,15 @@ while (test > 1E-6):
     
     TEMP = df.t_tmp[k]
     RAIN = df.t_rain[k]
-    PEVAP =df.t_evap[k]
+    PEVAP =df.t_evap[k]/0.75
     
     PC = df.t_PC[k]
     DPM_RPM = df.t_DPM_RPM[k]
 
-    C_Inp = carbon_input/12
+    C_Inp = carbon_input_baseline/12
     # C_Inp = df.t_C_Inp[k]
     
-    FYM_Inp = farmyard_manure/12
+    FYM_Inp = farmyard_manure_baseline/12
 	# FYM_Inp = df.t_FYM_Inp[k]
     
     modernC = df.t_mod[k] / 100.0   
@@ -705,15 +714,15 @@ for  i in range(timeFact, nsteps):
   
     TEMP = df.t_tmp[i]
     RAIN = df.t_rain[i]
-    PEVAP =df.t_evap[i]
+    PEVAP =df.t_evap[i]/0.75
     
     PC = df.t_PC[i]
     DPM_RPM = df.t_DPM_RPM[i]
 
-    C_Inp = carbon_input/12
+    C_Inp = carbon_input_baseline/12
     #C_Inp = df.t_C_Inp[i]
     
-    FYM_Inp = farmyard_manure/12
+    FYM_Inp = farmyard_manure_baseline/12
 	# FYM_Inp = df.t_FYM_Inp[i]
     
     modernC = df.t_mod[i] / 100.0
